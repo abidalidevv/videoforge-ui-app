@@ -156,3 +156,8 @@ export function makeRenderTask(projectId: ID, projectName: string): RenderTask {
     status: "queued", progress: 0,
   };
 }
+
+
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
