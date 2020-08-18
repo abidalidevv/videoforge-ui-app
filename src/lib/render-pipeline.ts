@@ -161,3 +161,8 @@ export function makeRenderTask(projectId: ID, projectName: string): RenderTask {
 type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
 };
+
+
+function exhaustiveCheck(x: never): never {
+  throw new Error(`Unhandled case: ${JSON.stringify(x)}`);
+}
