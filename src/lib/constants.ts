@@ -151,3 +151,8 @@ export const DEFAULT_SUBTITLE_SETTINGS = {
   shadow: false,
   karaokeMode: "off" as const,
 };
+
+
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
+};
