@@ -738,3 +738,8 @@ export const routeTree = rootRouteImport
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
+
+
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
