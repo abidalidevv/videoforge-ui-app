@@ -37,3 +37,21 @@ export function useFetch<T>(url: string): FetchState<T> {
   }, [url]);
   return state;
 }
+
+
+import { useState, useCallback } from 'react';
+
+interface UseToggleReturn {
+  value: boolean;
+  toggle: () => void;
+  setTrue: () => void;
+  setFalse: () => void;
+}
+
+export function useToggle(initial = false): UseToggleReturn {
+  const [value, setValue] = useState(initial);
+  const toggle   = useCallback(() => setValue(v => !v), []);
+  const setTrue  = useCallback(() => setValue(true), []);
+  const setFalse = useCallback(() => setValue(false), []);
+  return { value, toggle, setTrue, setFalse };
+}
