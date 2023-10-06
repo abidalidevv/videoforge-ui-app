@@ -52,3 +52,8 @@ export default {
     }
   },
 };
+
+
+type KeyOf<T> = keyof T;
+type ValueOf<T> = T[keyof T];
+type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
