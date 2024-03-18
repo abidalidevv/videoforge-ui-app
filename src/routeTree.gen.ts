@@ -743,3 +743,15 @@ function clamp(value: number, min: number, max: number): number {
 type StringKeys<T> = {
   [K in keyof T]: T[K] extends string ? K : never;
 }[keyof T];
+
+
+function groupBy<T, K extends string | number>(
+  arr: T[],
+  keyFn: (item: T) => K
+): Record<K, T[]> {
+  return arr.reduce((acc, item) => {
+    const key = keyFn(item);
+    (acc[key] = acc[key] || []).push(item);
+    return acc;
+  }, {} as Record<K, T[]>);
+}
