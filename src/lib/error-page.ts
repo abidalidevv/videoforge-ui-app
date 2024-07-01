@@ -33,3 +33,8 @@ export function renderErrorPage(): string {
 type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
 };
+
+
+type KeyOf<T> = keyof T;
+type ValueOf<T> = T[keyof T];
+type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
