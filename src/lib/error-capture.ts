@@ -33,3 +33,8 @@ async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   );
   return Promise.race([promise, timeout]);
 }
+
+
+type KeyOf<T> = keyof T;
+type ValueOf<T> = T[keyof T];
+type Entries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
