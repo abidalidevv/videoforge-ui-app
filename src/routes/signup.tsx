@@ -1,0 +1,89 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { AuthShell } from "@/components/auth-shell";
+import { Field, Input, PrimaryButton } from "@/components/app-shell";
+import { Mail, Lock, User, Check } from "lucide-react";
+
+export const Route = createFileRoute("/signup")({
+  head: () => ({ meta: [{ title: "Create account — VideoForge AI" }] }),
+  component: () => (
+    <AuthShell title="Create your studio" subtitle="Start free. Upgrade when you outgrow it.">
+      <form className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="First name"><div className="relative"><User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder="Abid" className="!pl-10" /></div></Field>
+          <Field label="Last name"><Input placeholder="Ali" /></Field>
+        </div>
+        <Field label="Email"><div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input type="email" placeholder="you@studio.com" className="!pl-10" /></div></Field>
+        <Field label="Password" hint="At least 8 characters with one number"><div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input type="password" placeholder="••••••••" className="!pl-10" /></div></Field>
+        <label className="flex items-start gap-2 text-[12px] text-muted-foreground"><input type="checkbox" className="accent-[#227850] mt-0.5" /> I agree to the <a className="text-primary font-semibold">Terms</a> and <a className="text-primary font-semibold">Privacy Policy</a>.</label>
+        <PrimaryButton className="w-full !h-12 !text-[14px]">Create account</PrimaryButton>
+      </form>
+      <div className="mt-5 text-[12px] text-muted-foreground space-y-1.5">
+        {["3 free renders per day", "Watermark-free exports", "Cancel anytime"].map(p => (<div key={p} className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-primary" /> {p}</div>))}
+      </div>
+      <div className="text-center text-[12.5px] text-muted-foreground mt-6">Already have an account? <Link to="/login" className="text-primary font-semibold hover:underline">Sign in</Link></div>
+    </AuthShell>
+  ),
+});
+
+
+import { useEffect, useRef, RefObject } from 'react';
+
+export function useClickOutside<T extends HTMLElement>(
+  handler: () => void
+): RefObject<T> {
+  const ref = useRef<T>(null);
+  useEffect(() => {
+    const listener = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) handler();
+    };
+    document.addEventListener('mousedown', listener);
+    return () => document.removeEventListener('mousedown', listener);
+  }, [handler]);
+  return ref;
+}
+
+
+import { useState, useCallback } from 'react';
+
+interface AsyncState<T> { data: T | null; loading: boolean; error: string | null; }
+
+export function useAsync<T>() {
+  const [state, setState] = useState<AsyncState<T>>({ data: null, loading: false, error: null });
+  const execute = useCallback(async (fn: () => Promise<T>) => {
+    setState({ data: null, loading: true, error: null });
+    try {
+      const data = await fn();
+      setState({ data, loading: false, error: null });
+      return data;
+    } catch (e) {
+      const error = e instanceof Error ? e.message : 'Unknown error';
+      setState({ data: null, loading: false, error });
+      throw e;
+    }
+  }, []);
+  return { ...state, execute };
+}
+
+
+import { forwardRef, InputHTMLAttributes } from 'react';
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  error?: string;
+  hint?: string;
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ label, error, hint, id, ...props }, ref) => {
+    const inputId = id ?? label.toLowerCase().replace(/\s+/g, '-');
+    return (
+      <div className="form-group">
+        <label htmlFor={inputId} className="form-label">{label}</label>
+        <input ref={ref} id={inputId} className={`form-input ${error ? 'error' : ''}`} {...props} />
+        {hint && !error && <p className="form-hint">{hint}</p>}
+        {error && <p className="form-error" role="alert">{error}</p>}
+      </div>
+    );
+  }
+);
+Input.displayName = 'Input';
